@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
-public class SelectObject : MonoBehaviour
+public class SelectionManager : MonoBehaviour
 {
     RaycastHit hit;
 
@@ -30,7 +30,12 @@ public class SelectObject : MonoBehaviour
             {
                 if (hit.collider.gameObject.tag == "Player")
                 {
+                    if (selectedObject != null)
+                    {
+                        selectedObject.gameObject.GetComponent<SelectableObject>().SetSelected(false);
+                    }
                     selectedObject = hit.collider.gameObject.GetComponentInParent<NavMeshAgent>();
+                    selectedObject.gameObject.GetComponent<SelectableObject>().SetSelected(true);
                 }
                 else
                 {
@@ -43,6 +48,7 @@ public class SelectObject : MonoBehaviour
         }
         if (clearAction.WasPressedThisFrame())
         {
+            selectedObject.gameObject.GetComponent<SelectableObject>().SetSelected(false);
             selectedObject = null;
         }
     }
