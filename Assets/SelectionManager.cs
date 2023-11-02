@@ -9,20 +9,22 @@ public class SelectionManager : MonoBehaviour
     RaycastHit hit;
 
     [SerializeField] Camera cam;
-    [SerializeField] NavMeshAgent selectedObject;
+    [SerializeField] NavMeshAgent selectedAgent;
+    [SerializeField] List<NavMeshAgent> selectedObjects;
 
-    [SerializeField] InputAction selectionAction, clearAction;
+    [SerializeField] InputAction selectionAction, clearAction, groupSelectAction;
     
     // Start is called before the first frame update
     void Start()
     {
-        
+        selectedObjects = new List<NavMeshAgent>();
     }
 
     // Update is called once per frame
     void Update()
     {
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        bool found = false;
 
         if (selectionAction.WasPressedThisFrame())
         {
@@ -30,38 +32,54 @@ public class SelectionManager : MonoBehaviour
             {
                 if (hit.collider.gameObject.tag == "Player")
                 {
-                    if (selectedObject != null)
+                    if (!groupSelectAction.IsPressed())
                     {
-                        selectedObject.gameObject.GetComponent<SelectableObject>().SetSelected(false);
+                        ClearSelectedList();
                     }
-                    selectedObject = hit.collider.gameObject.GetComponentInParent<NavMeshAgent>();
-                    selectedObject.gameObject.GetComponent<SelectableObject>().SetSelected(true);
+
+                    selectedAgent = hit.collider.gameObject.GetComponentInParent<NavMeshAgent>();
+
+                    if (!selectedObjects.Contains(selectedAgent))
+                    {
+                        selectedObjects.Add(selectedAgent);
+                        selectedAgent.gameObject.GetComponent<SelectableObject>().SetSelected(true);
+                    }
                 }
                 else
                 {
-                    if (selectedObject != null)
+                    for (int i = 0; i < selectedObjects.Count; i++)
                     {
-                        selectedObject.destination = hit.point;
+                        selectedObjects[i].destination = hit.point;
                     }
                 }
             }
         }
         if (clearAction.WasPressedThisFrame())
         {
-            selectedObject.gameObject.GetComponent<SelectableObject>().SetSelected(false);
-            selectedObject = null;
+            ClearSelectedList();
         }
+    }
+
+    void ClearSelectedList()
+    {
+        for (int i = 0; i < selectedObjects.Count; i++)
+        {
+            selectedObjects[i].GetComponent<SelectableObject>().SetSelected(false);  
+        }
+        selectedObjects.Clear();
     }
 
     private void OnEnable()
     {
         selectionAction.Enable();
         clearAction.Enable();
+        groupSelectAction.Enable();
     }
 
     private void OnDisable()
     {
         selectionAction.Disable();
         clearAction.Disable();
+        groupSelectAction.Disable();
     }
 }

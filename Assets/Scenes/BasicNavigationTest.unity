@@ -2976,7 +2976,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 963194227}
-  selectedObject: {fileID: 0}
+  selectedAgent: {fileID: 0}
+  selectedObjects: []
   selectionAction:
     m_Name: Selection
     m_Type: 0
@@ -3009,6 +3010,23 @@ MonoBehaviour:
       m_Processors: 
       m_Groups: 
       m_Action: Clear
+      m_Flags: 0
+    m_Flags: 0
+  groupSelectAction:
+    m_Name: Group Select
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 27805f6d-1f47-4e2b-a483-c33532e3f37a
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings:
+    - m_Name: 
+      m_Id: ee203857-5805-4282-9bc1-2e24bcfa1b6d
+      m_Path: <Keyboard>/leftCtrl
+      m_Interactions: 
+      m_Processors: 
+      m_Groups: 
+      m_Action: Group Select
       m_Flags: 0
     m_Flags: 0
 --- !u!4 &1178154156
