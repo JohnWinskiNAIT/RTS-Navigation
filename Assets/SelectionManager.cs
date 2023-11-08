@@ -13,6 +13,10 @@ public class SelectionManager : MonoBehaviour
     [SerializeField] List<NavMeshAgent> selectedObjects;
 
     [SerializeField] InputAction selectionAction, clearAction, groupSelectAction;
+
+    Vector3 targetDest;
+    float targetDistance;
+
     
     // Start is called before the first frame update
     void Start()
@@ -24,7 +28,6 @@ public class SelectionManager : MonoBehaviour
     void Update()
     {
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-        bool found = false;
 
         if (selectionAction.WasPressedThisFrame())
         {
@@ -47,9 +50,24 @@ public class SelectionManager : MonoBehaviour
                 }
                 else
                 {
+                    if (hit.collider.gameObject.tag == "Pickup")
+                    {
+                        targetDest = hit.transform.position;
+                        targetDistance = 0;
+                    }
+                    else if (hit.collider.gameObject.tag == "Enemy")
+                    {
+                        targetDest = hit.transform.position;
+                        targetDistance = 2.0f;
+                    }
+                    else
+                    {
+                        targetDest = hit.point;
+                    }
                     for (int i = 0; i < selectedObjects.Count; i++)
                     {
-                        selectedObjects[i].destination = hit.point;
+                        selectedObjects[i].destination = targetDest;
+                        selectedObjects[i].stoppingDistance = targetDistance;
                     }
                 }
             }
